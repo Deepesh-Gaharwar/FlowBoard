@@ -1,0 +1,21 @@
+export const ROLES = {
+  ORG_ADMIN: "ORG_ADMIN",
+  PRODUCT_MANAGER: "PRODUCT_MANAGER",
+  TEAM_LEAD: "TEAM_LEAD",
+  MEMBER: "MEMBER",
+  VIEWER: "VIEWER",
+};
+
+export const TASK_STATUS = {
+  BACKLOG: "BACKLOG",
+  TODO: "TODO",
+  IN_PROGRESS: "IN_PROGRESS",
+  REVIEW: "REVIEW",
+  DONE: "DONE",
+};
+
+export const PRIORITY = {
+  LOW: "LOW",
+  MEDIUM: "MEDIUM",
+  HIGH: "HIGH",
+};
