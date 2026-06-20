@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const organizationSchema = new mongoose.Schema(
+const teamSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -13,15 +13,16 @@ const organizationSchema = new mongoose.Schema(
       default: "",
     },
 
-    logo: {
-      type: String,
-      default: "",
+    organization: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organization",
+      required: true,
     },
 
-    owner: {
+    teamLead: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      default: null,
     },
 
     members: [
@@ -31,17 +32,15 @@ const organizationSchema = new mongoose.Schema(
       },
     ],
 
-    teams: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Team",
-      },
-    ],
-    
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
   },
   {
     timestamps: true,
   },
 );
 
-module.exports = mongoose.model("Organization", organizationSchema);
+module.exports = mongoose.model("Team", teamSchema);
