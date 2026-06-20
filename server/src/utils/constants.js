@@ -1,4 +1,4 @@
-export const ROLES = {
+const ROLES = {
   ORG_ADMIN: "ORG_ADMIN",
   PRODUCT_MANAGER: "PRODUCT_MANAGER",
   TEAM_LEAD: "TEAM_LEAD",
@@ -6,7 +6,7 @@ export const ROLES = {
   VIEWER: "VIEWER",
 };
 
-export const TASK_STATUS = {
+const TASK_STATUS = {
   BACKLOG: "BACKLOG",
   TODO: "TODO",
   IN_PROGRESS: "IN_PROGRESS",
@@ -14,8 +14,14 @@ export const TASK_STATUS = {
   DONE: "DONE",
 };
 
-export const PRIORITY = {
+const PRIORITY = {
   LOW: "LOW",
   MEDIUM: "MEDIUM",
   HIGH: "HIGH",
 };
+
+module.exports = {
+  ROLES,
+  TASK_STATUS,
+  PRIORITY
+}
