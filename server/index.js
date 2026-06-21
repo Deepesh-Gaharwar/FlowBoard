@@ -7,6 +7,7 @@ const connectDB = require("./src/config/db");
 const authRoutes =  require("./src/routes/auth.routes");
 const organizationRoutes = require("./src/routes/organization.routes");
 const teamRoutes = require("./src/routes/team.routes");
+const projectRoutes = require("./src/routes/project.routes");
 
 const CLIENT_URL = process.env.FRONTEND_URL;
 
@@ -30,6 +31,8 @@ app.use("/api/auth", authRoutes); // auth routes
 app.use("/api/organizations", organizationRoutes); // organization routes
 
 app.use("/api/teams", teamRoutes); // team routes
+
+app.use("/api/projects", projectRoutes); // project routes
 
 const PORT = process.env.PORT || 5000;
 

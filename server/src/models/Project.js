@@ -2,6 +2,12 @@ const mongoose = require("mongoose");
 
 const projectSchema = new mongoose.Schema(
   {
+    projectKey: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+
     title: {
       type: String,
       required: true,
@@ -19,6 +25,20 @@ const projectSchema = new mongoose.Schema(
       required: true,
     },
 
+    productManagers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+
+    teams: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Team",
+      },
+    ],
+
     members: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -33,17 +53,22 @@ const projectSchema = new mongoose.Schema(
       },
     ],
 
-    teams: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Team",
-      },
-    ],
+    projectVisibility: {
+      type: String,
+      enum: ["ORGANIZATION", "PRIVATE"],
+      default: "ORGANIZATION",
+    },
 
     status: {
       type: String,
-      enum: ["PLANNING", "ACTIVE", "COMPLETED", "ARCHIVED"],
+      enum: ["PLANNING", "ACTIVE", "ON_HOLD", "COMPLETED", "ARCHIVED"],
       default: "PLANNING",
+    },
+
+    priority: {
+      type: String,
+      enum: ["LOW", "MEDIUM", "HIGH"],
+      default: "MEDIUM",
     },
 
     startDate: {
@@ -51,6 +76,10 @@ const projectSchema = new mongoose.Schema(
     },
 
     deadline: {
+      type: Date,
+    },
+
+    estimatedCompletionDate: {
       type: Date,
     },
 

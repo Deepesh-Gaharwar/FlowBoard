@@ -38,6 +38,14 @@ const userSchema = new mongoose.Schema(
       ref: "Organization",
       default: null,
     },
+
+    projects: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Project",
+      },
+    ],
+    
   },
   {
     timestamps: true,
