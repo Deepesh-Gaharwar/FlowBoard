@@ -41,4 +41,18 @@ router.patch(
   completeSprint,
 );
 
+router.patch(
+  "/:sprintId",
+  authMiddleware,
+  allowRoles(ROLES.ORG_ADMIN, ROLES.PRODUCT_MANAGER),
+  updateSprint,
+);
+
+router.delete(
+  "/:sprintId",
+  authMiddleware,
+  allowRoles(ROLES.ORG_ADMIN, ROLES.PRODUCT_MANAGER),
+  deleteSprint,
+);
+
 module.exports = router;

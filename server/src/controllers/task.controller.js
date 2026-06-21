@@ -219,6 +219,85 @@ const updateTask = async (req, res) => {
   }
 };
 
+
+// To delete a task
+const deleteTask = async (req, res) => {
+  try {
+    const task = await Task.findById(
+      req.params.taskId
+    );
+
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: "Task not found",
+      });
+    }
+
+    await Project.findByIdAndUpdate(
+      task.project,
+      {
+        $pull: {
+          tasks: task._id,
+        },
+      }
+    );
+
+    if (task.sprint) {
+      await Sprint.findByIdAndUpdate(
+        task.sprint,
+        {
+          $pull: {
+            tasks: task._id,
+          },
+        }
+      );
+    }
+
+    await Task.findByIdAndDelete(
+      task._id
+    );
+
+    await createActivity({
+      project: task.project,
+
+      task: task._id,
+
+      user: req.user._id,
+
+      action: "TASK_DELETED",
+
+      message: `${req.user.name} deleted task ${task.taskKey}`,
+    });
+
+    await createAuditLog({
+      project: task.project,
+
+      entityType: "TASK",
+
+      entityId: task._id,
+
+      action: "TASK_DELETED",
+
+      performedBy: req.user._id,
+
+      details: `${req.user.name} deleted task ${task.taskKey}`,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "Task deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message:
+        error.message,
+    });
+  }
+};
+
 // Status APIs - Start task
 const startTask = async (req, res) => {
   const task = await Task.findByIdAndUpdate(
@@ -348,6 +427,7 @@ module.exports = {
   getSprintTasks,
   assignTask,
   updateTask,
+  deleteTask,
   startTask,
   reviewTask,
   completeTask,

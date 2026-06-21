@@ -146,63 +146,64 @@ const updateComment = async (req, res) => {
   };
 
 
-  // To delete comment
-const deleteComment = async (req, res) => {
-    try {
-      const comment =
-        await Comment.findById(
-          req.params.commentId
-        );
-
-      if (!comment) {
-        return res.status(404).json({
-          success: false,
-          message:
-            "Comment not found",
-        });
-      }
-
-      if (
-        comment.author.toString() !==
-          req.user._id.toString() &&
-        req.user.role !==
-          "ORG_ADMIN"
-      ) {
-        return res.status(403).json({
-          success: false,
-          message:
-            "Unauthorized",
-        });
-      }
-
-      await Comment.findByIdAndDelete(
-        comment._id
+ // To delete comment
+const deleteComment = async (
+  req,
+  res
+) => {
+  try {
+    const comment =
+      await Comment.findById(
+        req.params.commentId
       );
 
-    await createActivity({
-      project: task.project,
-      task: task._id,
-
-      user: req.user._id,
-
-      action: "COMMENT_DELETED",
-
-      message: `${req.user.name} deleted a comment on ${task.taskKey}`,
-    });
-
-      return res.status(200).json({
-        success: true,
-        message:
-          "Comment deleted successfully",
-      });
-    } catch (error) {
-      return res.status(500).json({
+    if (!comment) {
+      return res.status(404).json({
         success: false,
         message:
-          error.message,
+          "Comment not found",
       });
     }
-  };
+
+    if (
+      comment.author.toString() !==
+        req.user._id.toString() &&
+      req.user.role !==
+        "ORG_ADMIN"
+    ) {
+      return res.status(403).json({
+        success: false,
+        message:
+          "Unauthorized",
+      });
+    }
+
+    await Task.findByIdAndUpdate(
+      comment.task,
+      {
+        $pull: {
+          comments: comment._id,
+        },
+      }
+    );
+
+    await Comment.findByIdAndDelete(
+      comment._id
+    );
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "Comment deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message:
+        error.message,
+    });
+  }
+};
 
 
 module.exports = {

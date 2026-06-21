@@ -36,6 +36,8 @@ router.get("/:taskId", authMiddleware, getTaskById);
 
 router.patch("/:taskId", authMiddleware, updateTask);
 
+router.delete("/:taskId",authMiddleware,allowRoles(ROLES.ORG_ADMIN, ROLES.PRODUCT_MANAGER, ROLES.TEAM_LEAD),deleteTask);
+
 router.patch("/:taskId/assign", authMiddleware, assignTask);
 
 router.patch("/:taskId/start", authMiddleware, startTask);

@@ -207,10 +207,93 @@ const completeSprint = async (req, res) => {
   };
 
 
+  // To update sprint
+const updateSprint = async (
+  req,
+  res
+) => {
+  try {
+    const sprint =
+      await Sprint.findByIdAndUpdate(
+        req.params.sprintId,
+        req.body,
+        {
+          returnDocument:
+            "after",
+        }
+      );
+
+    if (!sprint) {
+      return res.status(404).json({
+        success: false,
+        message:
+          "Sprint not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "Sprint updated successfully",
+      sprint,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message:
+        error.message,
+    });
+  }
+};
+
+// To delete a sprint
+const deleteSprint = async (req, res) => {
+  try {
+    const sprint = await Sprint.findById(
+      req.params.sprintId
+    );
+
+    if (!sprint) {
+      return res.status(404).json({
+        success: false,
+        message: "Sprint not found",
+      });
+    }
+
+    await Project.findByIdAndUpdate(
+      sprint.project,
+      {
+        $pull: {
+          sprints: sprint._id,
+        },
+      }
+    );
+
+    await Sprint.findByIdAndDelete(
+      sprint._id
+    );
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "Sprint deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message:
+        error.message,
+    });
+  }
+};
+
+
   module.exports = {
     createSprint,
     getSprintById,
     getProjectSprints,
     startSprint,
     completeSprint,
+    updateSprint,
+    deleteSprint,
   };

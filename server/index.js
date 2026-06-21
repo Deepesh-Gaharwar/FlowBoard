@@ -12,6 +12,7 @@ const sprintRoutes = require("./src/routes/sprint.routes");
 const taskRoutes = require("./src/routes/task.routes");
 const commentRoutes = require("./src/routes/comment.routes");
 const activityRoutes = require("./src/routes/activity.routes");
+const auditRoutes = require("./src/routes/audit.routes");
 
 
 const CLIENT_URL = process.env.FRONTEND_URL;
@@ -46,6 +47,8 @@ app.use("/api/tasks", taskRoutes); // task routes
 app.use("/api/comments", commentRoutes); // comment routes
 
 app.use("/api/activity", activityRoutes); // activity routes
+
+app.use("/api/audit", auditRoutes); // audit logs routes
 
 const PORT = process.env.PORT || 5000;
 
