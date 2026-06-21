@@ -14,6 +14,7 @@ const commentRoutes = require("./src/routes/comment.routes");
 const activityRoutes = require("./src/routes/activity.routes");
 const auditRoutes = require("./src/routes/audit.routes");
 const workloadRoutes = require("./src/routes/workload.routes");
+const analyticsRoutes = require("./src/routes/analytics.routes");
 
 
 const CLIENT_URL = process.env.FRONTEND_URL;
@@ -52,6 +53,8 @@ app.use("/api/activity", activityRoutes); // activity routes
 app.use("/api/audit", auditRoutes); // audit logs routes
 
 app.use("/api/workload", workloadRoutes); // workload routes
+
+app.use("/api/analytics", analyticsRoutes); // analytics routes
 
 const PORT = process.env.PORT || 5000;
 
