@@ -37,7 +37,13 @@ const organizationSchema = new mongoose.Schema(
         ref: "Team",
       },
     ],
-    
+
+    projects: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Project",
+      },
+    ],
   },
   {
     timestamps: true,
