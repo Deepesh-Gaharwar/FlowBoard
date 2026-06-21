@@ -16,6 +16,7 @@ const auditRoutes = require("./src/routes/audit.routes");
 const workloadRoutes = require("./src/routes/workload.routes");
 const analyticsRoutes = require("./src/routes/analytics.routes");
 const notificationRoutes = require("./src/routes/notifications.routes");
+const dashboardRoutes = require("./src/routes/dashboard.routes");
 
 
 const CLIENT_URL = process.env.FRONTEND_URL;
@@ -58,6 +59,8 @@ app.use("/api/workload", workloadRoutes); // workload routes
 app.use("/api/analytics", analyticsRoutes); // analytics routes
 
 app.use("/api/notifications", notificationRoutes); // notifications routes
+
+app.use("/api/dashboard", dashboardRoutes); // dashboard routes
 
 const PORT = process.env.PORT || 5000;
 

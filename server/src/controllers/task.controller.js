@@ -384,16 +384,6 @@ const completeTask = async (req, res) => {
   await createActivity({
     project: task.project,
     task: task._id,
-    user: req.user._id,
-
-    action: "TASK_COMPLETED",
-
-    message: `${req.user.name} completed ${task.taskKey}`,
-  });
-
-  await createActivity({
-    project: task.project,
-    task: task._id,
 
     user: req.user._id,
 
