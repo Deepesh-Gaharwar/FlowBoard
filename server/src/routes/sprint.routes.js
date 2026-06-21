@@ -6,6 +6,8 @@ const {
   getProjectSprints,
   startSprint,
   completeSprint,
+  updateSprint,
+  deleteSprint
 } = require("../controllers/sprint.controller");
 
 const authMiddleware = require("../middlewares/auth.middleware");

@@ -42,3 +42,9 @@ const getOrganizationAuditLogs = async (req, res) => {
     });
   }
 };
+
+
+module.exports = {
+  getProjectAuditLogs,
+  getOrganizationAuditLogs,
+};
