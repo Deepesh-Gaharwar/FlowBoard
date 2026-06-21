@@ -1,5 +1,7 @@
 const Project = require("../models/Project");
 const Organization = require("../models/Organization");
+const User = require("../models/User");
+const Team = require("../models/Team");
 
 // To create a new project
 const createProject = async (req, res) => {
@@ -220,7 +222,362 @@ const deleteProject =
       });
     }
   };
-  
+
+
+// To add a product manager to project
+const addProductManager = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const project = await Project.findById(
+      req.params.projectId
+    );
+
+    const user = await User.findById(userId);
+
+    if (!project || !user) {
+      return res.status(404).json({
+        success: false,
+        message: "Project or User not found",
+      });
+    }
+
+    if (
+      project.productManagers.includes(userId)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "User already a product manager",
+      });
+    }
+
+    project.productManagers.push(userId);
+
+    await project.save();
+
+    if (
+      !user.projects.includes(project._id)
+    ) {
+      user.projects.push(project._id);
+      await user.save();
+    }
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "Product manager added successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+// To remove a product manager
+const removeProductManager = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const project = await Project.findById(
+      req.params.projectId
+    );
+
+    const user = await User.findById(userId);
+
+    if (!project || !user) {
+      return res.status(404).json({
+        success: false,
+        message: "Project or User not found",
+      });
+    }
+
+    project.productManagers.pull(userId);
+
+    user.projects.pull(project._id);
+
+    await project.save();
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "Product manager removed successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+// To add a team to project
+const addTeam = async (req, res) => {
+  try {
+    const { teamId } = req.body;
+
+    const project = await Project.findById(
+      req.params.projectId
+    );
+
+    const team = await Team.findById(teamId);
+
+    if (!project || !team) {
+      return res.status(404).json({
+        success: false,
+        message: "Project or Team not found",
+      });
+    }
+
+    if (
+      project.teams.includes(teamId)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Team already assigned",
+      });
+    }
+
+    project.teams.push(teamId);
+
+    await project.save();
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "Team added successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+// To remove a team from project
+const removeTeam = async (req, res) => {
+  try {
+    const { teamId } = req.body;
+
+    const project = await Project.findById(
+      req.params.projectId
+    );
+
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: "Project not found",
+      });
+    }
+
+    project.teams.pull(teamId);
+
+    await project.save();
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "Team removed successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+// To add a member to project
+const addMember = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const project = await Project.findById(
+      req.params.projectId
+    );
+
+    const user = await User.findById(userId);
+
+    if (!project || !user) {
+      return res.status(404).json({
+        success: false,
+        message: "Project or User not found",
+      });
+    }
+
+    if (
+      project.members.includes(userId)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "User already a member",
+      });
+    }
+
+    project.members.push(userId);
+
+    await project.save();
+
+    if (
+      !user.projects.includes(project._id)
+    ) {
+      user.projects.push(project._id);
+      await user.save();
+    }
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "Member added successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+// To remove a member from project
+const removeMember = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const project = await Project.findById(
+      req.params.projectId
+    );
+
+    const user = await User.findById(userId);
+
+    if (!project || !user) {
+      return res.status(404).json({
+        success: false,
+        message: "Project or User not found",
+      });
+    }
+
+    project.members.pull(userId);
+
+    user.projects.pull(project._id);
+
+    await project.save();
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "Member removed successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+ 
+
+// To add a viewer to project
+const addViewer = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const project = await Project.findById(
+      req.params.projectId
+    );
+
+    const user = await User.findById(userId);
+
+    if (!project || !user) {
+      return res.status(404).json({
+        success: false,
+        message: "Project or User not found",
+      });
+    }
+
+    if (
+      project.viewers.includes(userId)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "User already a viewer",
+      });
+    }
+
+    project.viewers.push(userId);
+
+    await project.save();
+
+    if (
+      !user.projects.includes(project._id)
+    ) {
+      user.projects.push(project._id);
+      await user.save();
+    }
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "Viewer added successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+// To remove a viewer from project
+const removeViewer = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const project = await Project.findById(
+      req.params.projectId
+    );
+
+    const user = await User.findById(userId);
+
+    if (!project || !user) {
+      return res.status(404).json({
+        success: false,
+        message: "Project or User not found",
+      });
+    }
+
+    project.viewers.pull(userId);
+
+    user.projects.pull(project._id);
+
+    await project.save();
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "Viewer removed successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 module.exports = {
   createProject,
@@ -228,4 +585,16 @@ module.exports = {
   getOrganizationProjects,
   updateProject,
   deleteProject,
+  
+  addProductManager,
+  removeProductManager,
+
+  addTeam,
+  removeTeam,
+
+  addMember,
+  removeMember,
+
+  addViewer,
+  removeViewer,
 };
