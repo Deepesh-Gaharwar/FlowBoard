@@ -35,6 +35,8 @@ router.get("/sprint/:sprintId", authMiddleware, getSprintTasks);
 
 router.get("/project/:projectId/filter", authMiddleware, filterProjectTasks);
 
+router.get("/project/:projectId/board", authMiddleware, getProjectBoard);
+
 router.get("/:taskId", authMiddleware, getTaskById);
 
 router.patch("/:taskId", authMiddleware, updateTask);

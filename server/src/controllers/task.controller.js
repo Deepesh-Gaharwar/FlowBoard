@@ -530,6 +530,62 @@ const filterProjectTasks = async (req, res) => {
   }
 };
 
+
+// To get kanban board data
+const getProjectBoard = async (req, res) => {
+  try {
+    const project =
+      await Project.findById(
+        req.params.projectId
+      );
+
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message:
+          "Project not found",
+      });
+    }
+
+    const tasks =
+      await Task.find({
+        project: project._id,
+      })
+        .populate(
+          "assignedTo",
+          "name email"
+        )
+        .populate(
+          "sprint",
+          "sprintName"
+        );
+
+    const board = {
+      TODO: [],
+      IN_PROGRESS: [],
+      IN_REVIEW: [],
+      DONE: [],
+      BLOCKED: [],
+    };
+
+    tasks.forEach(task => {
+      board[task.status].push(task);
+    });
+
+    return res.status(200).json({
+      success: true,
+      project: project.title,
+      board,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message:
+        error.message,
+    });
+  }
+};
+
 module.exports = {
   createTask,
   getTaskById,
@@ -543,4 +599,5 @@ module.exports = {
   completeTask,
   blockTask,
   filterProjectTasks,
+  getProjectBoard,
 };
