@@ -53,6 +53,13 @@ const projectSchema = new mongoose.Schema(
       },
     ],
 
+    sprints: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Sprint",
+      },
+    ],
+
     projectVisibility: {
       type: String,
       enum: ["ORGANIZATION", "PRIVATE"],
