@@ -420,6 +420,116 @@ const blockTask = async (req, res) => {
 };
 
 
+// To filter project tasks
+const filterProjectTasks = async (req, res) => {
+  try {
+    const {
+      status,
+      priority,
+      assignedTo,
+      label,
+      sprintId,
+      taskKey,
+      search,
+      sortBy,
+    } = req.query;
+
+    const query = {
+      project: req.params.projectId,
+    };
+
+    // Status Filter
+    if (status) {
+      query.status = status;
+    }
+
+    // Priority Filter
+    if (priority) {
+      query.priority = priority;
+    }
+
+    // Assignee Filter
+    if (assignedTo) {
+      query.assignedTo = assignedTo;
+    }
+
+    // Sprint Filter
+    if (sprintId) {
+      query.sprint = sprintId;
+    }
+
+    // Labels Filter
+    if (label) {
+      query.labels = label;
+    }
+
+    // Task Key Filter
+    if (taskKey) {
+      query.taskKey = {
+        $regex: taskKey,
+        $options: "i",
+      };
+    }
+
+    // Search By Title
+    if (search) {
+      query.title = {
+        $regex: search,
+        $options: "i",
+      };
+    }
+
+    let sort = {
+      createdAt: -1,
+    };
+
+    // Oldest
+    if (sortBy === "oldest") {
+      sort = {
+        createdAt: 1,
+      };
+    }
+
+    // Priority
+    if (sortBy === "priority") {
+      sort = {
+        priority: 1,
+      };
+    }
+
+    // Status
+    if (sortBy === "status") {
+      sort = {
+        status: 1,
+      };
+    }
+
+    const tasks = await Task.find(
+      query
+    )
+      .populate(
+        "assignedTo",
+        "name email role"
+      )
+      .populate(
+        "sprint",
+        "sprintName"
+      )
+      .sort(sort);
+
+    return res.status(200).json({
+      success: true,
+      count: tasks.length,
+      tasks,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   createTask,
   getTaskById,
@@ -432,4 +542,5 @@ module.exports = {
   reviewTask,
   completeTask,
   blockTask,
+  filterProjectTasks,
 };
