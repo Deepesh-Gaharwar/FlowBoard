@@ -1,0 +1,270 @@
+const Task = require("../models/Task");
+const Sprint = require("../models/Sprint");
+const Project = require("../models/Project");
+const User = require("../models/User");
+
+// To create a task
+const createTask = async (req, res) => {
+  try {
+    const {
+      taskKey,
+      title,
+      description,
+      projectId,
+      sprintId,
+      priority,
+      labels,
+    } = req.body;
+
+    const project = await Project.findById(projectId);
+
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: "Project not found",
+      });
+    }
+
+    let sprint = null;
+
+    if (sprintId) {
+      sprint = await Sprint.findById(sprintId);
+
+      if (!sprint) {
+        return res.status(404).json({
+          success: false,
+          message: "Sprint not found",
+        });
+      }
+    }
+
+    const task = await Task.create({
+      taskKey,
+      title,
+      description,
+      project: projectId,
+      sprint: sprintId || null,
+      priority,
+      labels,
+      createdBy: req.user._id,
+    });
+
+    project.tasks.push(task._id);
+
+    await project.save();
+
+    if (sprint) {
+      sprint.tasks.push(task._id);
+      await sprint.save();
+    }
+
+    return res.status(201).json({
+      success: true,
+      message: "Task created successfully",
+      task,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// To get task details
+const getTaskById = async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.taskId)
+      .populate("assignedTo", "name email role")
+      .populate("createdBy", "name email");
+
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: "Task not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      task,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// To get all project tasks
+const getProjectTasks = async (req, res) => {
+  try {
+    const tasks = await Task.find({
+      project: req.params.projectId,
+    });
+
+    return res.status(200).json({
+      success: true,
+      tasks,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// To get all sprint tasks
+const getSprintTasks = async (req, res) => {
+  try {
+    const tasks = await Task.find({
+      sprint: req.params.sprintId,
+    });
+
+    return res.status(200).json({
+      success: true,
+      tasks,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// To assign a task
+const assignTask = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const task = await Task.findById(req.params.taskId);
+
+    const user = await User.findById(userId);
+
+    if (!task || !user) {
+      return res.status(404).json({
+        success: false,
+        message: "Task or User not found",
+      });
+    }
+
+    task.assignedTo = userId;
+
+    await task.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Task assigned successfully",
+      task,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// To update task
+const updateTask = async (req, res) => {
+  try {
+    const task = await Task.findByIdAndUpdate(req.params.taskId, req.body, {
+      new: true,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Task updated successfully",
+      task,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// Status APIs - Start task
+const startTask = async (req, res) => {
+  const task = await Task.findByIdAndUpdate(
+    req.params.taskId,
+    {
+      status: "IN_PROGRESS",
+    },
+    { new: true },
+  );
+
+  return res.status(200).json({
+    success: true,
+    task,
+  });
+};
+
+
+// Status APIs - Review task
+const reviewTask = async (req, res) => {
+  const task = await Task.findByIdAndUpdate(
+    req.params.taskId,
+    {
+      status: "IN_REVIEW",
+    },
+    { new: true },
+  );
+
+  return res.status(200).json({
+    success: true,
+    task,
+  });
+};
+
+
+// Status APIs - Complete task
+const completeTask = async (req, res) => {
+  const task = await Task.findByIdAndUpdate(
+    req.params.taskId,
+    {
+      status: "DONE",
+    },
+    { new: true },
+  );
+
+  return res.status(200).json({
+    success: true,
+    task,
+  });
+};
+
+
+// Status APIs - Block task
+const blockTask = async (req, res) => {
+  const task = await Task.findByIdAndUpdate(
+    req.params.taskId,
+    {
+      status: "BLOCKED",
+    },
+    { new: true },
+  );
+
+  return res.status(200).json({
+    success: true,
+    task,
+  });
+};
+
+
+module.exports = {
+  createTask,
+  getTaskById,
+  getProjectTasks,
+  getSprintTasks,
+  assignTask,
+  updateTask,
+  startTask,
+  reviewTask,
+  completeTask,
+  blockTask,
+};

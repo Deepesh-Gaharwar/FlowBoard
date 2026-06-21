@@ -19,6 +19,13 @@ const sprintSchema = new mongoose.Schema(
       required: true,
     },
 
+    tasks: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Task",
+      },
+    ],
+
     startDate: {
       type: Date,
       required: true,

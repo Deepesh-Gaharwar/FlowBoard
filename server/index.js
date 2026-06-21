@@ -9,6 +9,7 @@ const organizationRoutes = require("./src/routes/organization.routes");
 const teamRoutes = require("./src/routes/team.routes");
 const projectRoutes = require("./src/routes/project.routes");
 const sprintRoutes = require("./src/routes/sprint.routes");
+const taskRoutes = require("./src/routes/task.routes");
 
 const CLIENT_URL = process.env.FRONTEND_URL;
 
@@ -36,6 +37,8 @@ app.use("/api/teams", teamRoutes); // team routes
 app.use("/api/projects", projectRoutes); // project routes
 
 app.use("/api/sprints", sprintRoutes); // sprint routes
+
+app.use("/api/tasks", taskRoutes); // task routes
 
 const PORT = process.env.PORT || 5000;
 
