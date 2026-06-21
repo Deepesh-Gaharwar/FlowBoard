@@ -17,6 +17,7 @@ const workloadRoutes = require("./src/routes/workload.routes");
 const analyticsRoutes = require("./src/routes/analytics.routes");
 const notificationRoutes = require("./src/routes/notifications.routes");
 const dashboardRoutes = require("./src/routes/dashboard.routes");
+const userRoutes = require("./src/routes/user.routes");
 
 
 const CLIENT_URL = process.env.FRONTEND_URL;
@@ -61,6 +62,8 @@ app.use("/api/analytics", analyticsRoutes); // analytics routes
 app.use("/api/notifications", notificationRoutes); // notifications routes
 
 app.use("/api/dashboard", dashboardRoutes); // dashboard routes
+
+app.use("/api/users", userRoutes); // user routes to define and manage roles
 
 const PORT = process.env.PORT || 5000;
 

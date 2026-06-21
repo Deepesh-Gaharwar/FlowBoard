@@ -26,7 +26,12 @@ const auditLogSchema = new mongoose.Schema(
 
     action: {
       type: String,
-      required: true,
+      enum: [
+        "TASK_DELETED",
+        "PROJECT_DELETED",
+        "SPRINT_DELETED",
+        "MEMBER_REMOVED",
+      ],
     },
 
     performedBy: {

@@ -34,8 +34,8 @@ const notificationSchema = new mongoose.Schema(
         "TEAM_ADDED",
         "PROJECT_ADDED",
         "SPRINT_STARTED",
+        "ROLE_UPDATED",
       ],
-      required: true,
     },
 
     task: {
