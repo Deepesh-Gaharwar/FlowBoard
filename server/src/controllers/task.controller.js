@@ -58,6 +58,16 @@ const createTask = async (req, res) => {
       await sprint.save();
     }
 
+    await createActivity({
+      project: project._id,
+      task: task._id,
+      user: req.user._id,
+
+      action: "TASK_CREATED",
+
+      message: `${req.user.name} created task ${task.taskKey}`,
+    });
+
     return res.status(201).json({
       success: true,
       message: "Task created successfully",
@@ -155,6 +165,16 @@ const assignTask = async (req, res) => {
 
     await task.save();
 
+    await createActivity({
+      project: task.project,
+      task: task._id,
+      user: req.user._id,
+
+      action: "TASK_ASSIGNED",
+
+      message: `${req.user.name} assigned ${task.taskKey} to ${user.name}`,
+    });
+
     return res.status(200).json({
       success: true,
       message: "Task assigned successfully",
@@ -173,6 +193,17 @@ const updateTask = async (req, res) => {
   try {
     const task = await Task.findByIdAndUpdate(req.params.taskId, req.body, {
       new: true,
+    });
+
+    await createActivity({
+      project: task.project,
+      task: task._id,
+
+      user: req.user._id,
+
+      action: "TASK_UPDATED",
+
+      message: `${req.user.name} updated task ${task.taskKey}`,
     });
 
     return res.status(200).json({
@@ -198,6 +229,17 @@ const startTask = async (req, res) => {
     { new: true },
   );
 
+  await createActivity({
+    project: task.project,
+    task: task._id,
+
+    user: req.user._id,
+
+    action: "TASK_STARTED",
+
+    message: `${req.user.name} started task ${task.taskKey}`,
+  });
+
   return res.status(200).json({
     success: true,
     task,
@@ -214,6 +256,17 @@ const reviewTask = async (req, res) => {
     },
     { new: true },
   );
+
+  await createActivity({
+    project: task.project,
+    task: task._id,
+
+    user: req.user._id,
+
+    action: "TASK_REVIEWED",
+
+    message: `${req.user.name} moved ${task.taskKey} to review`,
+  });
 
   return res.status(200).json({
     success: true,
@@ -232,6 +285,27 @@ const completeTask = async (req, res) => {
     { new: true },
   );
 
+  await createActivity({
+    project: task.project,
+    task: task._id,
+    user: req.user._id,
+
+    action: "TASK_COMPLETED",
+
+    message: `${req.user.name} completed ${task.taskKey}`,
+  });
+
+  await createActivity({
+    project: task.project,
+    task: task._id,
+
+    user: req.user._id,
+
+    action: "TASK_COMPLETED",
+
+    message: `${req.user.name} completed ${task.taskKey}`,
+  });
+
   return res.status(200).json({
     success: true,
     task,
@@ -248,6 +322,17 @@ const blockTask = async (req, res) => {
     },
     { new: true },
   );
+
+  await createActivity({
+    project: task.project,
+    task: task._id,
+
+    user: req.user._id,
+
+    action: "TASK_BLOCKED",
+
+    message: `${req.user.name} blocked ${task.taskKey}`,
+  });
 
   return res.status(200).json({
     success: true,

@@ -38,6 +38,16 @@ const createTeam = async (req, res) => {
 
     await organization.save();
 
+    await createActivity({
+      organization: team.organization,
+
+      user: req.user._id,
+
+      action: "TEAM_CREATED",
+
+      message: `${req.user.name} created team ${team.name}`,
+    });
+
     return res.status(201).json({
       success: true,
       message:
@@ -167,6 +177,16 @@ const assignTeamLead = async (req, res) => {
         }
       );
 
+      await createActivity({
+        organization: team.organization,
+
+        user: req.user._id,
+
+        action: "TEAM_LEAD_ASSIGNED",
+
+        message: `${req.user.name} assigned ${lead.name} as Team Lead of ${team.name}`,
+      });
+
       return res.status(200).json({
         success: true,
         message:
@@ -219,6 +239,16 @@ const addMemberToTeam = async (req, res) => {
 
       await team.save();
 
+      await createActivity({
+        organization: team.organization,
+
+        user: req.user._id,
+
+        action: "MEMBER_ADDED_TO_TEAM",
+
+        message: `${req.user.name} added ${member.name} to ${team.name}`,
+      });
+
       return res.status(200).json({
         success: true,
         message:
@@ -253,6 +283,16 @@ const removeMemberFromTeam = async (req, res) => {
         );
 
       await team.save();
+
+      await createActivity({
+        organization: team.organization,
+
+        user: req.user._id,
+
+        action: "MEMBER_REMOVED_FROM_TEAM",
+
+        message: `${req.user.name} removed ${member.name} from ${team.name}`,
+      });
 
       return res.status(200).json({
         success: true,

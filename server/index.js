@@ -11,6 +11,8 @@ const projectRoutes = require("./src/routes/project.routes");
 const sprintRoutes = require("./src/routes/sprint.routes");
 const taskRoutes = require("./src/routes/task.routes");
 const commentRoutes = require("./src/routes/comment.routes");
+const activityRoutes = require("./src/routes/activity.routes");
+
 
 const CLIENT_URL = process.env.FRONTEND_URL;
 
@@ -42,6 +44,8 @@ app.use("/api/sprints", sprintRoutes); // sprint routes
 app.use("/api/tasks", taskRoutes); // task routes
 
 app.use("/api/comments", commentRoutes); // comment routes
+
+app.use("/api/activity", activityRoutes); // activity routes
 
 const PORT = process.env.PORT || 5000;
 

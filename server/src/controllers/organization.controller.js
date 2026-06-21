@@ -36,6 +36,15 @@ const createOrganization = async (req, res) => {
       organization: organization._id,
     });
 
+    await createActivity({
+      organization: organization._id,
+      user: req.user._id,
+
+      action: "ORG_CREATED",
+
+      message: `${req.user.name} created organization ${organization.name}`,
+    });
+
     return res.status(201).json({
       success: true,
       message: "Organization created successfully",

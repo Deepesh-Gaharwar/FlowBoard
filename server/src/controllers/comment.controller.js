@@ -29,6 +29,17 @@ const createComment = async (req, res) => {
 
     await task.save();
 
+    await createActivity({
+      project: task.project,
+      task: task._id,
+
+      user: req.user._id,
+
+      action: "COMMENT_ADDED",
+
+      message: `${req.user.name} commented on ${task.taskKey}`,
+    });
+
     return res.status(201).json({
       success: true,
       message:
@@ -108,6 +119,17 @@ const updateComment = async (req, res) => {
 
       await comment.save();
 
+      await createActivity({
+        project: task.project,
+        task: task._id,
+
+        user: req.user._id,
+
+        action: "COMMENT_UPDATED",
+
+        message: `${req.user.name} updated a comment on ${task.taskKey}`,
+      });
+
       return res.status(200).json({
         success: true,
         message:
@@ -156,6 +178,17 @@ const deleteComment = async (req, res) => {
       await Comment.findByIdAndDelete(
         comment._id
       );
+
+    await createActivity({
+      project: task.project,
+      task: task._id,
+
+      user: req.user._id,
+
+      action: "COMMENT_DELETED",
+
+      message: `${req.user.name} deleted a comment on ${task.taskKey}`,
+    });
 
       return res.status(200).json({
         success: true,

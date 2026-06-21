@@ -41,6 +41,16 @@ const createSprint = async (
 
     await project.save();
 
+    await createActivity({
+      project: project._id,
+
+      user: req.user._id,
+
+      action: "SPRINT_CREATED",
+
+      message: `${req.user.name} created sprint ${sprint.sprintName}`,
+    });
+
     return res.status(201).json({
       success: true,
       message:
@@ -132,6 +142,16 @@ const startSprint = async ( req, res) => {
         }
       );
 
+    await createActivity({
+      project: sprint.project,
+
+      user: req.user._id,
+
+      action: "SPRINT_STARTED",
+
+      message: `${req.user.name} started sprint ${sprint.sprintName}`,
+    });
+
     return res.status(200).json({
       success: true,
       message:
@@ -161,6 +181,16 @@ const completeSprint = async (req, res) => {
           }
         );
 
+    await createActivity({
+      project: sprint.project,
+
+      user: req.user._id,
+
+      action: "SPRINT_COMPLETED",
+
+      message: `${req.user.name} completed sprint ${sprint.sprintName}`,
+    });
+    
       return res.status(200).json({
         success: true,
         message:

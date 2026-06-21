@@ -85,6 +85,17 @@ const createProject = async (req, res) => {
 
     await organization.save();
 
+    await createActivity({
+      organization: project.organization,
+      project: project._id,
+
+      user: req.user._id,
+
+      action: "PROJECT_CREATED",
+
+      message: `${req.user.name} created project ${project.title}`,
+    });
+
     return res.status(201).json({
       success: true,
       message:
@@ -173,8 +184,7 @@ const getOrganizationProjects =
 
 
   // To update project details
-const updateProject =
-  async (req, res) => {
+const updateProject = async (req, res) => {
     try {
       const project =
         await Project.findByIdAndUpdate(
@@ -184,6 +194,17 @@ const updateProject =
             new: true,
           }
         );
+
+        await createActivity({
+          organization: project.organization,
+          project: project._id,
+
+          user: req.user._id,
+
+          action: "PROJECT_UPDATED",
+
+          message: `${req.user.name} updated project ${project.title}`,
+        });
 
       return res.status(200).json({
         success: true,
@@ -262,6 +283,17 @@ const addProductManager = async (req, res) => {
       user.projects.push(project._id);
       await user.save();
     }
+
+    await createActivity({
+      organization: project.organization,
+      project: project._id,
+
+      user: req.user._id,
+
+      action: "PRODUCT_MANAGER_ADDED",
+
+      message: `${req.user.name} added ${targetUser.name} as Product Manager`,
+    });
 
     return res.status(200).json({
       success: true,
@@ -347,6 +379,17 @@ const addTeam = async (req, res) => {
     project.teams.push(teamId);
 
     await project.save();
+
+    await createActivity({
+      organization: project.organization,
+      project: project._id,
+
+      user: req.user._id,
+
+      action: "TEAM_ADDED_TO_PROJECT",
+
+      message: `${req.user.name} added ${team.name} to project ${project.title}`,
+    });
 
     return res.status(200).json({
       success: true,
@@ -434,6 +477,17 @@ const addMember = async (req, res) => {
       user.projects.push(project._id);
       await user.save();
     }
+
+    await createActivity({
+      organization: project.organization,
+      project: project._id,
+
+      user: req.user._id,
+
+      action: "MEMBER_ADDED_TO_PROJECT",
+
+      message: `${req.user.name} added ${member.name} to project ${project.title}`,
+    });
 
     return res.status(200).json({
       success: true,
@@ -527,6 +581,17 @@ const addViewer = async (req, res) => {
       await user.save();
     }
 
+    await createActivity({
+      organization: project.organization,
+      project: project._id,
+
+      user: req.user._id,
+
+      action: "VIEWER_ADDED_TO_PROJECT",
+
+      message: `${req.user.name} added ${viewer.name} as Viewer`,
+    });
+
     return res.status(200).json({
       success: true,
       message:
@@ -585,7 +650,7 @@ module.exports = {
   getOrganizationProjects,
   updateProject,
   deleteProject,
-  
+
   addProductManager,
   removeProductManager,
 
