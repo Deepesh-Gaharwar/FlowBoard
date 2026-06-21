@@ -11,7 +11,9 @@ const {
   reviewTask,
   completeTask,
   blockTask,
-  deleteTask
+  deleteTask,
+  filterProjectTasks,
+  getProjectBoard,
 } = require("../controllers/task.controller");
 
 const authMiddleware = require("../middlewares/auth.middleware");

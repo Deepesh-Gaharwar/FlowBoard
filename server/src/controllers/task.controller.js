@@ -2,6 +2,7 @@ const Task = require("../models/Task");
 const Sprint = require("../models/Sprint");
 const Project = require("../models/Project");
 const User = require("../models/User");
+const createNotification = require("../utils/createNotification");
 
 // To create a task
 const createTask = async (req, res) => {
@@ -164,6 +165,22 @@ const assignTask = async (req, res) => {
     task.assignedTo = userId;
 
     await task.save();
+
+    await createNotification({
+      recipient: user._id,
+
+      sender: req.user._id,
+
+      title: "Task Assigned",
+
+      message: `${req.user.name} assigned ${task.taskKey} to you`,
+
+      type: "TASK_ASSIGNED",
+
+      task: task._id,
+
+      project: task.project,
+    });
 
     await createActivity({
       project: task.project,

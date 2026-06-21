@@ -29,6 +29,27 @@ const createComment = async (req, res) => {
 
     await task.save();
 
+    if (
+      task.assignedTo &&
+      task.assignedTo.toString() !== req.user._id.toString()
+    ) {
+      await createNotification({
+        recipient: task.assignedTo,
+
+        sender: req.user._id,
+
+        title: "New Comment",
+
+        message: `${req.user.name} commented on ${task.taskKey}`,
+
+        type: "COMMENT_ADDED",
+
+        task: task._id,
+
+        project: task.project,
+      });
+    }
+
     await createActivity({
       project: task.project,
       task: task._id,
