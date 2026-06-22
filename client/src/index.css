@@ -1,1 +1,49 @@
 @import "tailwindcss";
+
+:root {
+
+    /* Primary */
+
+    --color-primary: #2563eb;
+    --color-primary-hover: #1d4ed8;
+
+    /* Backgrounds */
+
+    --color-background: #f8fafc;
+    --color-surface: #ffffff;
+
+    /* Text */
+
+    --color-text-primary: #0f172a;
+    --color-text-secondary: #64748b;
+
+    /* Borders */
+
+    --color-border: #e2e8f0;
+
+    /* Status */
+
+    --color-success: #22c55e;
+    --color-warning: #f59e0b;
+    --color-danger: #ef4444;
+    --color-info: #3b82f6;
+
+    /* Priority */
+
+    --priority-low: #22c55e;
+    --priority-medium: #f59e0b;
+    --priority-high: #ef4444;
+
+    /* Sidebar */
+
+    --sidebar-bg: #ffffff;
+    --sidebar-active: #dbeafe;
+
+    /* Navbar */
+
+    --navbar-bg: #ffffff;
+
+    /* Cards */
+
+    --card-bg: #ffffff;
+}

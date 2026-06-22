@@ -1,9 +1,13 @@
 import React from 'react'
+import { BrowserRouter } from "react-router-dom";
+import AppRoutes from "./routes/AppRoutes";
 
 const App = () => {
   return (
-    <div className="bg-slate-500">App</div>
-  )
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
+  );
 }
 
 export default App
