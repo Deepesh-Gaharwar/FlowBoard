@@ -61,7 +61,18 @@ const Sidebar = () => {
           lg:translate-x-0
         `}
       >
-        <div className="flex items-center justify-between p-5 border-b border-[var(--color-border)]">
+        {/* Sidebar Header */}
+        <div
+          className="
+            h-16
+            px-6
+            flex
+            items-center
+            justify-between
+            border-b
+            border-[var(--color-border)]
+          "
+        >
           <h1 className="text-2xl font-bold text-[var(--color-primary)]">
             FlowBoard
           </h1>
@@ -71,6 +82,7 @@ const Sidebar = () => {
           </button>
         </div>
 
+        {/* Navigation */}
         <nav className="p-4 space-y-2">
           {sidebarLinks.map((link) => {
             const Icon = link.icon;

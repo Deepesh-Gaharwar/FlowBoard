@@ -1,12 +1,11 @@
 import { Routes, Route } from "react-router-dom";
 
 import Login from "../pages/Login";
-
 import Register from "../pages/Register";
-
 import Dashboard from "../pages/Dashboard";
 
 import ProtectedRoute from "../components/ProtectedRoute";
+import MainLayout from "../layouts/MainLayout";
 
 const AppRoutes = () => {
   return (
@@ -16,13 +15,14 @@ const AppRoutes = () => {
       <Route path="/register" element={<Register />} />
 
       <Route
-        path="/"
         element={
           <ProtectedRoute>
-            <Dashboard />
+            <MainLayout />
           </ProtectedRoute>
         }
-      />
+      >
+        <Route path="/" element={<Dashboard />} />
+      </Route>
     </Routes>
   );
 };

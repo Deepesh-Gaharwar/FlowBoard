@@ -1,13 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import authReducer from "../redux/authSlice";
-
 import storageModule from "redux-persist/lib/storage";
+import dashboardReducer from "./dashboardSlice";
 
 const storage = storageModule.default;
-
 import { persistReducer, persistStore } from "redux-persist";
-
 import { combineReducers } from "@reduxjs/toolkit";
 
 const persistConfig = {
@@ -18,6 +16,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  dashboard: dashboardReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
