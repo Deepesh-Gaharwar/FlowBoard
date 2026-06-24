@@ -49,7 +49,7 @@ const Sidebar = () => {
           left-0
           h-screen
           w-64
-          bg-[var(--sidebar-bg)]
+          bg-white
           border-r
           border-[var(--color-border)]
           z-50
@@ -61,7 +61,7 @@ const Sidebar = () => {
           lg:translate-x-0
         `}
       >
-        {/* Sidebar Header */}
+        {/* Logo */}
         <div
           className="
             h-16
@@ -83,7 +83,14 @@ const Sidebar = () => {
         </div>
 
         {/* Navigation */}
-        <nav className="p-4 space-y-2">
+        <nav
+          className="
+            p-4
+            space-y-2
+            overflow-y-auto
+            h-[calc(100vh-64px)]
+          "
+        >
           {sidebarLinks.map((link) => {
             const Icon = link.icon;
 
@@ -101,16 +108,18 @@ const Sidebar = () => {
                   py-3
                   rounded-xl
                   transition-all
+                  font-medium
 
                   ${
                     isActive
-                      ? "bg-blue-100 text-blue-600"
-                      : "hover:bg-slate-100"
+                      ? "bg-[var(--color-primary)] text-white shadow-sm"
+                      : "text-slate-700 hover:bg-slate-100"
                   }
                 `
                 }
               >
                 <Icon size={20} />
+
                 <span>{link.name}</span>
               </NavLink>
             );

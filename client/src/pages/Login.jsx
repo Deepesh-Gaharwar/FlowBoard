@@ -12,8 +12,8 @@ const Login = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+    email: "rahul@gmail.com",
+    password: "Rahul@123",
   });
 
   const handleChange = (e) => {
@@ -28,6 +28,8 @@ const Login = () => {
 
     try {
       const data = await loginUser(formData);
+
+      console.log("LOGIN RESPONSE", data);
 
       dispatch(setUser(data.user));
 

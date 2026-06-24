@@ -1,4 +1,3 @@
-import React from "react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -16,10 +15,6 @@ const Dashboard = () => {
 
   const { user } = useSelector((state) => state.auth);
 
-  useEffect(() => {
-    fetchDashboard();
-  }, []);
-
   const fetchDashboard = async () => {
     try {
       dispatch(setLoading(true));
@@ -33,6 +28,10 @@ const Dashboard = () => {
       dispatch(setLoading(false));
     }
   };
+
+    useEffect(() => {
+      fetchDashboard();
+    }, []);
 
   if (loading) {
     return <h1>Loading...</h1>;
