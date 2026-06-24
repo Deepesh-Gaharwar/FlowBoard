@@ -33,11 +33,12 @@ const userSchema = new mongoose.Schema(
       default: "VIEWER",
     },
 
-    organization: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Organization",
-      default: null,
-    },
+    organizations: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Organization",
+      },
+    ],
 
     projects: [
       {
@@ -45,7 +46,6 @@ const userSchema = new mongoose.Schema(
         ref: "Project",
       },
     ],
-    
   },
   {
     timestamps: true,

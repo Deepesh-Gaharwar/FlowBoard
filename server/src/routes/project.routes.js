@@ -4,6 +4,7 @@ const {
   createProject,
   getProjectById,
   getOrganizationProjects,
+  getMyProjects,
   updateProject,
   deleteProject,
   addProductManager,
@@ -31,7 +32,11 @@ router.post(
   createProject,
 );
 
+router.get("/my/projects", authMiddleware, getMyProjects);
+
 router.get("/:projectId", authMiddleware, getProjectById);
+
+router.get("/my/projects", authMiddleware, getMyProjects);
 
 router.get(
   "/organization/:organizationId",

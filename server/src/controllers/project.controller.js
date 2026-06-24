@@ -56,34 +56,33 @@ const createProject = async (req, res) => {
       });
     }
 
-    const project =
-      await Project.create({
-        projectKey,
-        title,
-        description,
-        organization:
-          organizationId,
+  const project = await Project.create({
+    projectKey,
+    title,
+    description,
+    organization: organizationId,
 
-        productManagers: [
-          req.user._id,
-        ],
+    productManagers: [req.user._id],
 
-        projectVisibility,
-        priority,
+    projectVisibility,
+    priority,
 
-        startDate,
-        deadline,
-        estimatedCompletionDate,
+    startDate,
+    deadline,
+    estimatedCompletionDate,
 
-        createdBy:
-          req.user._id,
-      });
+    createdBy: req.user._id,
+  });
 
-    organization.projects.push(
-      project._id
-    );
+    organization.projects.push(project._id);
 
     await organization.save();
+
+    await User.findByIdAndUpdate(req.user._id, {
+      $addToSet: {
+        projects: project._id,
+      },
+    });
 
     await createActivity({
       organization: project.organization,
@@ -182,6 +181,41 @@ const getOrganizationProjects =
     }
   };
 
+// To get all projects for current user
+const getMyProjects = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).populate({
+      path: "projects",
+      populate: [
+        {
+          path: "productManagers",
+          select: "name email role",
+        },
+        {
+          path: "teams",
+          select: "name",
+        },
+      ],
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      projects: user.projects || [],
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
   // To update project details
 const updateProject = async (req, res) => {
@@ -223,8 +257,7 @@ const updateProject = async (req, res) => {
 
 
 // To delete a project
-const deleteProject =
-  async (req, res) => {
+const deleteProject = async (req, res) => {
     try {
       await Project.findByIdAndDelete(
         req.params.projectId
@@ -292,7 +325,7 @@ const addProductManager = async (req, res) => {
 
       action: "PRODUCT_MANAGER_ADDED",
 
-      message: `${req.user.name} added ${targetUser.name} as Product Manager`,
+      message: `${req.user.name} added ${user.name} as Product Manager to ${project.title}`,
     });
 
     return res.status(200).json({
@@ -486,7 +519,7 @@ const addMember = async (req, res) => {
 
       action: "MEMBER_ADDED_TO_PROJECT",
 
-      message: `${req.user.name} added ${member.name} to project ${project.title}`,
+      message: `${req.user.name} added ${user.name} to project ${project.title}`,
     });
 
     return res.status(200).json({
@@ -589,7 +622,7 @@ const addViewer = async (req, res) => {
 
       action: "VIEWER_ADDED_TO_PROJECT",
 
-      message: `${req.user.name} added ${viewer.name} as Viewer`,
+      message: `${req.user.name} added ${user.name} as Viewer to ${project.title}`,
     });
 
     return res.status(200).json({
@@ -648,6 +681,7 @@ module.exports = {
   createProject,
   getProjectById,
   getOrganizationProjects,
+  getMyProjects,
   updateProject,
   deleteProject,
 
