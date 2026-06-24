@@ -13,16 +13,7 @@ const createOrganization = async (req, res) => {
       });
     }
 
-    const existingOrganization = await Organization.findOne({
-      owner: req.user._id,
-    });
-
-    if (existingOrganization) {
-      return res.status(400).json({
-        success: false,
-        message: "You already own an organization",
-      });
-    }
+    
 
     const organization = await Organization.create({
       name,
@@ -31,10 +22,16 @@ const createOrganization = async (req, res) => {
       members: [req.user._id],
     });
 
-    await User.findByIdAndUpdate(req.user._id, {
-      role: "ORG_ADMIN",
-      organization: organization._id,
-    });
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        role: "ORG_ADMIN",
+        $push: {
+          organizations: organization._id,
+        },
+      },
+      { new: true },
+    );
 
     await createActivity({
       organization: organization._id,
@@ -95,24 +92,48 @@ const getOrganizationById = async (req, res) => {
 };
 
 // To get current user's organization
-const getMyOrganization = async (req, res) => {
+const getMyOrganizations = async (req, res) => {
   try {
-    const organization =
-      await Organization.findOne({
-        members: req.user._id,
-      })
-        .populate(
-          "owner",
-          "name email role"
-        )
-        .populate(
-          "members",
-          "name email role"
-        );
+    const organizations = await Organization.find({
+      members: req.user._id,
+    })
+      .populate("owner", "name email role")
+      .populate("members", "name email role");
 
     return res.status(200).json({
       success: true,
-      organization,
+      organizations,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// Get all organization members
+const getOrganizationMembers = async (req, res) => {
+  try {
+    const organization = await Organization.findById(req.params.organizationId)
+      .populate("members", "name email role avatar")
+      .populate("owner", "name email role");
+
+    if (!organization) {
+      return res.status(404).json({
+        success: false,
+        message: "Organization not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+
+      owner: organization.owner,
+
+      totalMembers: organization.members.length,
+
+      members: organization.members,
     });
   } catch (error) {
     return res.status(500).json({
@@ -125,5 +146,6 @@ const getMyOrganization = async (req, res) => {
 module.exports = {
   createOrganization,
   getOrganizationById,
-  getMyOrganization,
+  getMyOrganizations,
+  getOrganizationMembers,
 };
