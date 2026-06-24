@@ -4,6 +4,7 @@ const {
   createTeam,
   getTeamById,
   getOrganizationTeams,
+  assignProductManager,
   assignTeamLead,
   addMemberToTeam,
   removeMemberFromTeam,
@@ -23,6 +24,13 @@ router.get(
   "/organization/:organizationId",
   authMiddleware,
   getOrganizationTeams,
+);
+
+router.patch(
+  "/:teamId/assign-pm",
+  authMiddleware,
+  allowRoles(ROLES.ORG_ADMIN),
+  assignProductManager,
 );
 
 router.patch(

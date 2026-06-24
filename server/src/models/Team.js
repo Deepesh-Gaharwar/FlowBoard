@@ -19,6 +19,13 @@ const teamSchema = new mongoose.Schema(
       required: true,
     },
 
+    productManagers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+
     teamLead: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

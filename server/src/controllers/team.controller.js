@@ -65,24 +65,15 @@ const createTeam = async (req, res) => {
 // To get team details
 const getTeamById = async (req, res) => {
   try {
-    const team =
-      await Team.findById(
-        req.params.teamId
-      )
-        .populate(
-          "teamLead",
-          "name email role"
-        )
-        .populate(
-          "members",
-          "name email role"
-        );
+    const team = await Team.findById(req.params.teamId)
+      .populate("productManagers", "name email role")
+      .populate("teamLead", "name email role")
+      .populate("members", "name email role");
 
     if (!team) {
       return res.status(404).json({
         success: false,
-        message:
-          "Team not found",
+        message: "Team not found",
       });
     }
 
@@ -91,6 +82,8 @@ const getTeamById = async (req, res) => {
       team,
     });
   } catch (error) {
+    console.log(error);
+
     return res.status(500).json({
       success: false,
       message: error.message,
@@ -131,6 +124,37 @@ const getOrganizationTeams = async (req, res) => {
     }
   };
 
+// To assign Product manager
+const assignProductManager = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const team = await Team.findById(req.params.teamId);
+
+    if (!team) {
+      return res.status(404).json({
+        success: false,
+        message: "Team not found",
+      });
+    }
+
+    if (!team.productManagers.includes(userId)) {
+      team.productManagers.push(userId);
+    }
+
+    await team.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Product Manager assigned",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 // To assign a team lead
 const assignTeamLead = async (req, res) => {
@@ -184,7 +208,7 @@ const assignTeamLead = async (req, res) => {
 
         action: "TEAM_LEAD_ASSIGNED",
 
-        message: `${req.user.name} assigned ${lead.name} as Team Lead of ${team.name}`,
+        message: `${req.user.name} assigned ${user.name} as Team Lead of ${team.name}`,
       });
 
       return res.status(200).json({
@@ -246,7 +270,7 @@ const addMemberToTeam = async (req, res) => {
 
         action: "MEMBER_ADDED_TO_TEAM",
 
-        message: `${req.user.name} added ${member.name} to ${team.name}`,
+        message: `${req.user.name} added ${user.name} to ${team.name}`,
       });
 
       return res.status(200).json({
@@ -270,6 +294,8 @@ const removeMemberFromTeam = async (req, res) => {
       const { userId } =
         req.body;
 
+      const user = await User.findById(userId);
+
       const team =
         await Team.findById(
           req.params.teamId
@@ -291,7 +317,7 @@ const removeMemberFromTeam = async (req, res) => {
 
         action: "MEMBER_REMOVED_FROM_TEAM",
 
-        message: `${req.user.name} removed ${member.name} from ${team.name}`,
+        message: `${req.user.name} removed ${member.name}`,
       });
 
       return res.status(200).json({
@@ -313,6 +339,7 @@ const removeMemberFromTeam = async (req, res) => {
     createTeam,
     getTeamById,
     getOrganizationTeams,
+    assignProductManager,
     assignTeamLead,
     addMemberToTeam,
     removeMemberFromTeam,
